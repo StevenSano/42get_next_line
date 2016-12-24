@@ -6,7 +6,7 @@
 /*   By: hvillasa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/15 14:51:32 by hvillasa          #+#    #+#             */
-/*   Updated: 2016/12/23 21:24:59 by hvillasa         ###   ########.fr       */
+/*   Updated: 2016/12/23 21:50:29 by hvillasa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ int					get_next_line(const int fd, char **line)
 	*line = (tmp[len] == '\n') ? ft_strndup(tmp, len) : (ft_strdup(n->content));
 	if ((ret == 0 && tmp[len] == 0))
 		ft_strclr((char*)(n->content));
-	n->content = (tmp[len] == '\n') ? (ft_strdup(n->content + (len + 1))) :
-		(n->content + 0);
+	n->content = (tmp[len] == '\n') ? (ft_strdup(n->content + (len + 1))) : (n->content + 0);
 	return (1);
 }
