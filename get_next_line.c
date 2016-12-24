@@ -6,7 +6,7 @@
 /*   By: hvillasa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/15 14:51:32 by hvillasa          #+#    #+#             */
-/*   Updated: 2016/12/23 02:04:08 by hvillasa         ###   ########.fr       */
+/*   Updated: 2016/12/23 21:24:59 by hvillasa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,33 @@
 static t_list		*get_fd(int fd)
 {
 	static t_list	*head;
-	t_list			*tmp;
+	t_list			*temp;
 
-	tmp = head;
-	while (tmp)
+	temp = head;
+	while (temp)
 	{
-		if ((int)tmp->content_size == fd)
-			return (tmp);
-		tmp = tmp->next;
+		if ((int)temp->content_size == fd)
+			return (temp);
+		temp = temp->next;
 	}
-	tmp = ft_lstnew("\0", 1);
-	tmp->content_size = fd;
-	ft_lstadd(&head, tmp);
-	return (tmp);
+	temp = ft_lstnew("\0", 1);
+	temp->content_size = fd;
+	ft_lstadd(&head, temp);
+	return (temp);
 }
 
-static void			merge(t_list *l, char const *buf, int size)
+static void			merge(t_list *node, char const *buff, int size)
 {
-	char			*c;
+	char			*temp;
 
-	if (!(l->content))
+	if (!node->content)
 	{
-		l->content = ft_strndup(buf, size);
+		node->content = ft_strndup(buff, size);
 		return ;
 	}
-	c = l->content;
-	l->content = ft_strjoin(c, buf);
-	free((void*)buf);
+	temp = node->content;
+	node->content = ft_strjoin(temp, buff);
+	free((void*)buff);
 }
 
 static int			delim_sp(char *s)
@@ -49,15 +49,9 @@ static int			delim_sp(char *s)
 	int				i;
 
 	i = 0;
-	while (s[i] != 0 &&  s[i] != '\n')
+	while (s[i] != 0 && s[i] != '\n')
 		i++;
 	return (i);
-}
-
-static void			check_z(t_list *n, int ret, char *tmp, int len)
-{
-	if (ret == 0 && tmp[len] == 0)
-		ft_strclr((char*)n->content);
 }
 
 int					get_next_line(const int fd, char **line)
@@ -65,26 +59,26 @@ int					get_next_line(const int fd, char **line)
 	int				len;
 	int				ret;
 	char			*tmp;
-	char			buf[BUF_SIZE];
+	char			buf[BUFF_SIZE];
 	t_list			*n;
 
 	len = 0;
 	ret = 0;
-	if (fd < 0 || !(line) ||read(fd, buf, 0) < 0)
-		return (-1);
+	IFTRUE((fd < 0 || line == NULL || read(fd, buf, 0) < 0), -1);
 	n = get_fd(fd);
-	while (!ft_strchr(buf, '\n') && (ret = read(fd, buf, BUF_SIZE)))
+	while (!ft_strchr(n->content, '\n') && (ret = read(fd, buf, BUFF_SIZE)))
 		merge(n, ft_strndup(buf, ret), ret);
-	if (ret < BUF_SIZE && ft_strlen(n->content) == 0)
+	if (ret < BUFF_SIZE && ft_strlen(n->content) == 0)
 	{
 		ft_strclr(*line);
 		return (0);
 	}
 	tmp = n->content;
 	len = delim_sp(tmp);
-	*line = (tmp[len] == '\n') ? ft_strndup(tmp, len) : ft_strdup(n->content);
-	check_z(n, ret, tmp, len);
-	n->content = (tmp[len] == '\n') ?
-		(ft_strdup(n->content + (len + 1))) : (n->content);
+	*line = (tmp[len] == '\n') ? ft_strndup(tmp, len) : (ft_strdup(n->content));
+	if ((ret == 0 && tmp[len] == 0))
+		ft_strclr((char*)(n->content));
+	n->content = (tmp[len] == '\n') ? (ft_strdup(n->content + (len + 1))) :
+		(n->content + 0);
 	return (1);
 }

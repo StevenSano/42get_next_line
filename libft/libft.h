@@ -6,7 +6,7 @@
 /*   By: hvillasa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/31 10:15:41 by hvillasa          #+#    #+#             */
-/*   Updated: 2016/12/22 12:15:10 by hvillasa         ###   ########.fr       */
+/*   Updated: 2016/12/23 21:14:05 by hvillasa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
+
+# define IFTRUE(x, y) if (x) return (y)
 
 typedef struct	s_list
 {
